@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <header></header>
+    <title>OMDBAPI Movie Search</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="./stylesheet.css" />
+    
+  </head>
+  <body>
+<ul>
+      <div id="movieScreen">
+        <div id="searchDiv">
+        <form id="search-form">
+
+      <label for="search-input">Search for a movie:</label>
+      <input
+        type="text"
+        id="search-input"
+        name="search"
+        required
+        minlength="3"
+        class="search"
+      />
+
+      <label for="type-select">Movie Type:</label>
+      <select id="type-select"  class="search" name="type">
+        <option value="">Any Type</option>
+        <option value="movie">Movie</option>
+        <option value="series">Series</option>
+        <option value="episode">Episode</option>
+      </select>
+   
+      <label for="year-input">Year:</label>
+      <input type="number"  class="search" id="year-input" name="year" min="1900" max="2023" />
+
+      <button type="searchBoxesInput"  class="search" id="searchBoxesInput">Search</button>
+    </form>
+     </div>
+     </div>
+     <div id="search-results"><ul></ul></div>
+    </ul>
+    <script>
+      const searchBoxesInput = document.getElementById('searchBoxesInput')
+
+      searchBoxesInput.addEventListener('click', function (event) {
+        event.preventDefault() // Prevent form submission
+        // if ()
+        let title = document.getElementById('search-input').value
+        let type = document.getElementById('type-select').value
+        let year = 'y=' + document.getElementById('year-input').value + '&'
+        if (title.length >= 3) {
+          title = 't=' + title + '&'
+        } else {
+          title = ''
+        }
+        if (type) {
+          type = 'type=' + type + '&'
+        } else {
+          type = ''
+        }
+
+        // Perform the search using the values retrieved from the form
+        performSearch(title, type, year)
+      })
+
+      function performSearch(title, type, year) {
+        fetch(`http://www.omdbapi.com/?${title}${type}${year}&apikey=f05f841a`) // jsonplaceholder is a free fake API for testing
+          .then((response) => {
+            // This is a promise
+            console.log(response) // Logs the response object
+            if (!response.ok) {
+              // If the promise failed...
+              console.log(response.status) // Log its status
+            }
+            return response.json() // This parses the response as a JSON, which also returns a promise
+          })
+          .then((res) => {
+            console.log(res)
+            let returnMessage = document.getElementById('search-results')
+            returnMessage.innerText = `Title: ${res.Title}, Year: ${res.Year}, Type: ${res.Type}, Director: ${res.Director}, Actors: ${res.Actors}`
+          }) // handles the promise given by the return statement
+        //
+      }
+    </script>
+  </body>
+</html>
